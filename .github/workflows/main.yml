@@ -1,4 +1,4 @@
-name: CD CUSTOM Build and Deploy
+name: CD Build and Deploy .NET App
 
 on:
   push:
@@ -7,18 +7,36 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # Inject environment variables and secrets
     env:
       DOTNET_ENVIRONMENT: Production
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
       API_KEY: ${{ secrets.API_KEY }}
 
     steps:
-      - uses: actions/checkout@v3
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-      - name: Build
-        run: dotnet build
-      - name: Run cicddemo
-        run: dotnet cicddemo
+
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Step 4: Build project
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      # Step 5: Run tests
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+      # Step 6: Publish app
+      - name: Publish app
+        run: dotnet publish -c Release -o ./publish
