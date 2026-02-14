@@ -14,7 +14,7 @@ jobs:
       DOTNET_ENVIRONMENT: Production
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
       API_KEY: ${{ secrets.API_KEY }}
-      CD_KEY: ${{ vars.LOG_LEVEL }}
+      CD_KEY: ${{ vars.API_ID }}
 
     steps:
       # Step 1: Checkout code
