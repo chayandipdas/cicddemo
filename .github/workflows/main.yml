@@ -40,6 +40,5 @@ jobs:
 
       # Step 6: Publish app
       - name: Publish app
-        run: dotnet publish -c Release -o ./publish
-        working-directory: src/cicddemo
+        run: dotnet publish -c Release -o /home/runner/publish
 
