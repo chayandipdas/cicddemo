@@ -40,5 +40,11 @@ jobs:
 
       # Step 6: Publish app
       - name: Publish app
-        run: dotnet publish -c Release -o /home/runner/publish
-
+        run: dotnet publish -c Release -o ./publish
+  
+      # ✅ New step: Upload publish folder as artifact
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-publish
+          path: ./publish
