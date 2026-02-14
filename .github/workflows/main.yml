@@ -14,6 +14,7 @@ jobs:
       DOTNET_ENVIRONMENT: Production
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
       API_KEY: ${{ secrets.API_KEY }}
+      CD_KEY: "dddd"
 
     steps:
       # Step 1: Checkout code
@@ -44,6 +45,7 @@ jobs:
         run: |
           sed -i "s|#{DB_CONNECTION_STRING}#|${DB_CONNECTION_STRING}|g" appsettings.json
           sed -i "s|#{API_KEY}#|${API_KEY}|g" appsettings.json
+          sed -i "s|#{CD_KEY}#|${CD_KEY}|g" appsettings.json
 
 
       # Step 6: Publish app
