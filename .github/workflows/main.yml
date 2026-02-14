@@ -38,6 +38,21 @@ jobs:
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
 
+      # Step 6a: (Optional) Replace tokens in appsettings.json
+      # Only needed if you want secrets inside appsettings.json
+      - name: Replace tokens in appsettings.json
+        run: |
+          sed -i "s|#{DB_CONNECTION_STRING}#|${DB_CONNECTION_STRING}|g" appsettings.json
+          sed -i "s|#{API_KEY}#|${API_KEY}|g" appsettings.json
+
+
       # Step 6: Publish app
       - name: Publish app
         run: dotnet publish -c Release -o ./publish
+  
+      # ✅ New step: Upload publish folder as artifact
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-publish
+          path: ./publish
