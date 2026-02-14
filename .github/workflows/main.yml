@@ -44,7 +44,7 @@ jobs:
   
       # ✅ New step: Upload publish folder as artifact
       - name: Upload publish artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dotnet-publish
           path: ./publish
