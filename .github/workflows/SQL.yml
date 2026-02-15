@@ -1,0 +1,40 @@
+name: SQL Database Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  sql-deploy:
+    runs-on: ubuntu-latest
+    environment: production   # 👈 use environment secrets for DB credentials
+
+    env:
+      DB_SERVER: "115.124.106.157"
+      DB_NAME: "dharasuta_2026_CICD"
+      DB_USER: "dharasuta_2026_CICD"
+      DB_PASSWORD: "CDAdmin@123"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install sqlcmd (for SQL Server) or psql (for PostgreSQL)
+      - name: Install SQL tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mssql-tools unixodbc-dev
+
+      # Run SQL scripts (tables, inserts, SPs, views)
+      - name: Run SQL scripts
+        run: |
+          for file in ./sql-scripts/*.sql; do
+            echo "Running $file..."
+            /opt/mssql-tools/bin/sqlcmd \
+              -S $DB_SERVER \
+              -d $DB_NAME \
+              -U $DB_USER \
+              -P $DB_PASSWORD \
+              -i $file
+          done
