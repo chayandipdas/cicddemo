@@ -33,11 +33,6 @@ jobs:
 
       # ── 4. Verify SQL server connectivity ────────────────────────────────────
       - name: Test Database Connection
-        env:
-          DB_SERVER:   $DB_SERVER
-          DB_NAME:     $DB_NAME
-          DB_USER:     $DB_USER
-          DB_PASSWORD: $DB_PASSWORD
         run: |
           echo "Testing connection to $DB_SERVER / $DB_NAME ..."
           sqlcmd \
