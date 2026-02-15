@@ -24,7 +24,6 @@ jobs:
       - name: Install SQL Server Command Line Tools
         run: |
           choco install mssql-tools -y
-          echo '##[add-path]C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn'
         shell: powershell
 
       - name: Run SQL scripts
