@@ -41,6 +41,7 @@ jobs:
             -U "$DB_USER" \
             -P "$DB_PASSWORD" \
             -C \
+            -No \
             -Q "SELECT @@VERSION AS [SQL Server Version], DB_NAME() AS [Database];"
           echo "✅ Connection successful."
 
@@ -49,5 +50,5 @@ jobs:
         run: |
           for file in ./sql-scripts/*.sql; do
             echo "Running $file..."
-            sqlcmd -S $DB_SERVER -d $DB_NAME -U $DB_USER -P $DB_PASSWORD -i $file
+            sqlcmd -S $DB_SERVER -d $DB_NAME -U $DB_USER -P $DB_PASSWORD -No -i $file
           done
