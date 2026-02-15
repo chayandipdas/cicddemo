@@ -21,20 +21,21 @@ jobs:
         uses: actions/checkout@v3
 
       # Install sqlcmd (for SQL Server) or psql (for PostgreSQL)
-      - name: Install SQL tools
+      - name: Install SQL Server tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y mssql-tools unixodbc-dev
+          sudo apt-get install -y curl apt-transport-https gnupg
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools unixodbc-dev
+          echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+          source ~/.bashrc
 
       # Run SQL scripts (tables, inserts, SPs, views)
       - name: Run SQL scripts
         run: |
           for file in ./sql-scripts/*.sql; do
             echo "Running $file..."
-            /opt/mssql-tools/bin/sqlcmd \
-              -S $DB_SERVER \
-              -d $DB_NAME \
-              -U $DB_USER \
-              -P $DB_PASSWORD \
-              -i $file
+            sqlcmd -S $DB_SERVER -d $DB_NAME -U $DB_USER -P $DB_PASSWORD -i $file
           done
