@@ -18,23 +18,37 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Install sqlcmd (for SQL Server) or psql (for PostgreSQL)
-      - name: Install SQL tools
+       # ── 3. Install sqlcmd (Microsoft SQL Server tools) ───────────────────────
+      - name: Install sqlcmd
         run: |
-          sudo apt-get update
-          sudo apt-get install -y mssql-tools unixodbc-dev
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list \
+            | sudo tee /etc/apt/sources.list.d/msprod.list
+          sudo apt-get update -y
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
+          echo "/opt/mssql-tools18/bin" >> $GITHUB_PATH
 
-      # Run SQL scripts (tables, inserts, SPs, views)
+
+      # ── 4. Verify SQL server connectivity ────────────────────────────────────
+      - name: Test Database Connection
+        run: |
+          echo "Testing connection to $DB_SERVER / $DB_NAME ..."
+          sqlcmd \
+            -S "$DB_SERVER" \
+            -d "$DB_NAME" \
+            -U "$DB_USER" \
+            -P "$DB_PASSWORD" \
+            -C \
+            -No \
+            -Q "SELECT @@VERSION AS [SQL Server Version], DB_NAME() AS [Database];"
+          echo "✅ Connection successful."
+
+          
       - name: Run SQL scripts
         run: |
           for file in ./sql-scripts/*.sql; do
             echo "Running $file..."
-            /opt/mssql-tools/bin/sqlcmd \
-              -S $DB_SERVER \
-              -d $DB_NAME \
-              -U $DB_USER \
-              -P $DB_PASSWORD \
-              -i $file
+            sqlcmd -S $DB_SERVER -d $DB_NAME -U $DB_USER -P $DB_PASSWORD -No -i $file
           done
