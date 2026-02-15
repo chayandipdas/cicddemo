@@ -59,7 +59,7 @@ jobs:
 
       # Step 7: Upload to FTP
       - name: Upload to FTP server
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
           server: "115.124.106.157"
           username: "dharasuta_2026"
